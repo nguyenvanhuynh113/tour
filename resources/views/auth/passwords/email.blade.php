@@ -17,7 +17,11 @@
                         <div class="form-group">
                             <label for="email">{{ __('Địa chỉ email') }}</label>
                             <input id="email" type="email"
+<<<<<<< HEAD
                                    placeholder="Nhập địa chỉ email tài khoản của bạn"
+=======
+                                   placeholder="Nhập địa chỉ email của bạn"
+>>>>>>> 0862db7 (first commit)
                                    class="form-control @error('email') is-invalid @enderror" name="email"
                                    value="{{ old('email') }}" required autocomplete="email" autofocus>
 
@@ -30,7 +34,11 @@
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
+<<<<<<< HEAD
                                     {{ __('Gửi liên kết ặt lại mật khẩu') }}
+=======
+                                    {{ __('Gửi liên kết đặt lại mật khẩu') }}
+>>>>>>> 0862db7 (first commit)
                                 </button>
                             </div>
                         </div>

@@ -19,9 +19,8 @@ class HomeController extends Controller
     //trang chủ
     public function index(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        //Lấy tất cả thông tin địa điểm của cấc tour du lịch
+        //Lấy tất cả thông tin địa điểm nếu có chuyến đi
         $place = Place::whereHas('tours')->get();
-
         // Lấy thông tin 6 chuyến đi gần nhất được tạo sắp xếp theo thời gian tạo
         $tour = DB::table('tours')->orderBy('created_at')->take(6)->get();
         //Lấy thông tin 3 chuyến đi gần nhất được tạo sắp xếp theo thời gian tạo
@@ -39,7 +38,7 @@ class HomeController extends Controller
 
     public function blog_detail($slug): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $category = Category::all();
+        $category = Category::whereHas('blogs')->get();
         $blog = DB::table('blogs')->where('slug', '=', $slug)->first();
         $new_blog = Blog::all()->take(4);
         return view('page/blog_details', compact('blog', 'category', 'new_blog'));
@@ -54,7 +53,9 @@ class HomeController extends Controller
 
     public function tour_detail($slug): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
+
         $place = Place::all();
+        $place = Place::whereHas('tours')->get();
         $tour = Tour::all()->where('slug', '=', $slug)->first();
         return view('page/tour_details', compact('tour', 'place'));
     }
@@ -68,10 +69,16 @@ class HomeController extends Controller
         return view('page/blog', compact('blog', 'category'));
     }
 
-    public function place($slug)
+    public function place($slug): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
         $place = Place::all()->where('slug', '=', $slug)->first();
         $tour = $place->tours()->paginate(12);
         return view('page/place', compact('tour', 'place'));
+    }
+
+    // liên hệ
+    public function contact(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+    {
+        return view('page/contact');
     }
 }

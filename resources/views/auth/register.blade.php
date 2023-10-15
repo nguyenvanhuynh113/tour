@@ -61,7 +61,11 @@
                         <div class="row justify-content-center align-items-center">
                             <div>
                                 <button type="submit" class="btn btn-primary px-5 py-2">
+<<<<<<< HEAD
                                     {{ __('Đăng kí') }}
+=======
+                                    {{ __('Đăng kí tài khoản') }}
+>>>>>>> 0862db7 (first commit)
                                 </button>
                             </div>
                         </div>

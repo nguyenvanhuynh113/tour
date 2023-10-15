@@ -16,6 +16,7 @@ class Tour extends Model
     {
         return $this->belongsTo(Place::class, 'id_place');
     }
+
     public function departure_dates(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(DepartureDate::class, 'id_tour');

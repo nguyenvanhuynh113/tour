@@ -33,6 +33,15 @@ class CreateBookingsTable extends Migration
             //Tổng tiền đươn đặt vé chuyến đi
             $table->decimal('total_prices', 12, 3)->nullable();
             $table->timestamps();
+            //Ngày khởi hành
+            $table->date('departure_date')->nullable();
+            //Số lượng vé
+            $table->smallInteger('person')->default(0)->nullable();
+            //Tổng tiền đơn đặt vé chuyến đi
+            $table->decimal('total_prices', 12, 3)->nullable();
+            $table->enum('status', ['success', 'fails'])->default('success');
+            $table->timestamps();
+            $table->softDeletes();
             $table->foreign('id_tour')->references('id')->on('tours');
         });
     }

@@ -34,3 +34,10 @@ Route::get('/dia-diem-du-lich/{slug}', [\App\Http\Controllers\HomeController::cl
 Route::get('danh-muc-bai-viet/{slug}', [\App\Http\Controllers\HomeController::class, 'category'])
     ->name('danh-muc-bai-viet');
 
+
+Route::get('/lien-he', [\App\Http\Controllers\HomeController::class, 'contact'])->name('lien-he');
+
+Route::post('/tim-kiem', [\App\Http\Controllers\SearchController::class, 'search'])->name('tim-kiem');
+
+Route::post('/thanh-toan', [\App\Http\Controllers\PaymentController::class, 'payment'])->name('thanh-toan');
+Route::get('/thanh-toan/ket-qua-giao-dich', [\App\Http\Controllers\PaymentController::class, 'response']);

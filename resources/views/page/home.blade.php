@@ -12,6 +12,7 @@
             </div>
         </div>
     </div>
+    {{-- Tìm kiếm --}}
     <section class="ftco-section ftco-no-pb ftco-no-pt">
         <div class="container">
             <div class="row">
@@ -30,60 +31,53 @@
                                 <div class="tab-content" id="v-pills-tabContent">
                                     <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel"
                                          aria-labelledby="v-pills-nextgen-tab">
-                                        <form action="#" class="search-property-1">
+                                        {{-- Form tim kiem trang chu--}}
+                                        <form action="{{route('tim-kiem')}}" class="search-property-1" method="post"
+                                              enctype="multipart/form-data">
+                                            @csrf
                                             <div class="row no-gutters">
                                                 <div class="col-md d-flex">
                                                     <div class="form-group p-4 border-0">
                                                         <label for="#">Địa điểm</label>
                                                         <div class="form-field">
                                                             <div class="icon"><span class="fa fa-search"></span></div>
-                                                            <input type="text" class="form-control"
+                                                            <input type="text" class="form-control" name="place"
                                                                    placeholder="Tìm kiếm địa điểm">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md d-flex">
                                                     <div class="form-group p-4">
-                                                        <label for="#">Ngày bắt đầu</label>
+                                                        <label for="#">Ngày Khởi Hành</label>
                                                         <div class="form-field">
-                                                            <div class="icon"><span class="fa fa-calendar"></span></div>
+                                                            <div class="icon"><span
+                                                                    class="fa fa-calendar"></span></div>
                                                             <input type="text" class="form-control checkin_date"
+                                                                   name="check_in_date"
                                                                    placeholder="Ngày khởi hành">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-md d-flex">
                                                     <div class="form-group p-4">
-                                                        <label for="#">Ngày kết thúc</label>
-                                                        <div class="form-field">
-                                                            <div class="icon"><span class="fa fa-calendar"></span></div>
-                                                            <input type="text" class="form-control checkout_date"
-                                                                   placeholder='Ngày kết thúc'>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md d-flex">
-                                                    <div class="form-group p-4">
-                                                        <label for="#">Giá</label>
+                                                        <label for="#">Giá tối đa</label>
                                                         <div class="form-field">
                                                             <div class="select-wrap">
                                                                 <div class="icon"><span
                                                                         class="fa fa-chevron-down"></span></div>
-                                                                <select name="" id="" class="form-control">
-                                                                    <option value="">$100</option>
-                                                                    <option value="">$10,000</option>
-                                                                    <option value="">$50,000</option>
-                                                                    <option value="">$100,000</option>
-                                                                    <option value="">$200,000</option>
-                                                                    <option value="">$300,000</option>
-                                                                    <option value="">$400,000</option>
-                                                                    <option value="">$500,000</option>
-                                                                    <option value="">$600,000</option>
-                                                                    <option value="">$700,000</option>
-                                                                    <option value="">$800,000</option>
-                                                                    <option value="">$900,000</option>
-                                                                    <option value="">$1,000,000</option>
-                                                                    <option value="">$2,000,000</option>
+                                                                <select name="tour_prices" id="tour_prices"
+                                                                        class="form-control">
+                                                                    <option value="">Chọn mức giá tối đa</option>
+                                                                    <option value="1000000">đ 1,000,000</option>
+                                                                    <option value="2000000">đ 2,000,000</option>
+                                                                    <option value="3000000">đ 3,000,000</option>
+                                                                    <option value="4000000">đ 4,000,000</option>
+                                                                    <option value="5000000">đ 5,000,000</option>
+                                                                    <option value="6000000">đ 6,000,000</option>
+                                                                    <option value="7000000">đ 7,000,000</option>
+                                                                    <option value="8000000">đ 8,000,000</option>
+                                                                    <option value="9000000">đ 9,000,000</option>
+                                                                    <option value="10000000">đ 10,000,000</option>
                                                                 </select>
                                                             </div>
                                                         </div>
@@ -106,7 +100,9 @@
                     </div>
                 </div>
             </div>
+        </div>
     </section>
+    {{-- Nổi bật --}}
     <section class="ftco-section img ftco-select-destination" style="background-image: url(images/bg_3.jpg);">
         <div class="container">
             <div class="row justify-content-center pb-4">
@@ -139,7 +135,7 @@
             </div>
         </div>
     </section>
-
+    {{-- Mới cập nhật --}}
     <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center pb-4">
@@ -159,9 +155,15 @@
                             </a>
                             <div class="text p-4">
                                 <span class="days">{{$item->total_date_tour}} ngày</span>
+                                <<<<<<< HEAD
                                 <h4>
                                     <a href="{{\Illuminate\Support\Facades\URL::to('chi-tiet-chuyen-di/'.$item->slug)}}">{{$item->title}}</a>
                                 </h4>
+                                =======
+                                <h6>
+                                    <a href="{{\Illuminate\Support\Facades\URL::to('chi-tiet-chuyen-di/'.$item->slug)}}">{{$item->title}}</a>
+                                </h6>
+                                >>>>>>> 0862db7 (first commit)
                                 <p class="location"><span class="fa fa-map-marker"></span> {{$item->des_address}}
                                 </p>
                             </div>
@@ -172,7 +174,7 @@
         </div>
     </section>
 
-    <section class="ftco-section ftco-about img" style="background-image: url(images/bg_4.jpg);">
+    <section class="ftco-section ftco-about img" style="background-image: url(/images/bg_4.jpg);">
         <div class="overlay"></div>
         <div class="container py-md-5">
             <div class="row py-md-5">
@@ -180,7 +182,6 @@
                 </div>
             </div>
     </section>
-
     <section class="ftco-section ftco-about ftco-no-pt img">
         <div class="container">
             <div class="row d-flex">
@@ -195,9 +196,11 @@
                             <div class="row justify-content-start pb-3">
                                 <div class="col-md-12 heading-section ftco-animate">
                                     <span class="subheading">About Us</span>
+                                    <span class="subheading">Về chúng tôi</span>
                                     <h2 class="mb-4">Hãy tận hưởng chuyến đi đáng nhớ và an toàn với chúng tôi.</h2>
                                     <p>Far far away, behind the word mountains, far from the countries Vokalia and
-                                        Consonantia, there live the blind texts. Separated they live in Bookmarksgrove
+                                        Consonantia, there live the blind texts. Separated they live in
+                                        Bookmarksgrove
                                         right at the coast of the Semantics, a large language ocean.</p>
                                     <p><a href="#" class="btn btn-primary">Đặt chỗ ngay</a></p>
                                 </div>
@@ -208,7 +211,7 @@
             </div>
         </div>
     </section>
-
+    {{--Bài viết gần đây--}}
     <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center pb-4">
@@ -255,8 +258,9 @@
                                         href="{{\Illuminate\Support\Facades\URL::to('chi-tiet-bai-viet/'.$item->slug)}}">{{\Illuminate\Support\Str::limit($item->title,50)}}</a>
                                 </h5>
                                 <!-- <p>A small river named Duden flows by their place and supplies it with the necessary regelialia.</p> -->
-                                <p><a href="{{\Illuminate\Support\Facades\URL::to('chi-tiet-bai-viet/'.$item->slug)}}"
-                                      class="btn btn-primary">Xem thêm</a></p>
+                                <p>
+                                    <a href="{{\Illuminate\Support\Facades\URL::to('chi-tiet-bai-viet/'.$item->slug)}}"
+                                       class="btn btn-primary">Xem thêm</a></p>
                             </div>
                         </div>
                     </div>
@@ -264,7 +268,7 @@
             </div>
         </div>
     </section>
-
+    {{--Liên hệ--}}
     <section class="ftco-intro ftco-section ftco-no-pt">
         <div class="container">
             <div class="row justify-content-center">
@@ -273,7 +277,8 @@
                         <div class="overlay"></div>
                         <h2>Chúng tôi là VietTravel </h2>
                         <p>Liên hệ ngay với chúng tôi để nhận thông tin về chuyến đi mà bạn đang quan tâm.</p>
-                        <p class="mb-0"><a href="{{\Illuminate\Support\Facades\URL::to('/lien-he')}}" class="btn btn-primary px-4 py-3">Liên hệ ngay</a></p>
+                        <p class="mb-0"><a href="{{\Illuminate\Support\Facades\URL::to('/lien-he')}}"
+                                           class="btn btn-primary px-4 py-3">Liên hệ ngay</a></p>
                     </div>
                 </div>
             </div>
