@@ -32,7 +32,7 @@ class BookingResource extends Resource
                 Forms\Components\Card::make()
                     ->schema([
                         Forms\Components\TextInput::make('booking_number')
-                            ->label('Mã số đặt vé')
+                            ->label('Mã HD')
                             ->disabled()
                             ->default('BK-' . rand(99999, 10000000)),
                         Select::make('id_tour')
@@ -54,9 +54,6 @@ class BookingResource extends Resource
                             ->mask(fn(Mask $mask) => $mask->pattern('+{84}(000)000-00-00'))
                             ->numeric()
                             ->required(),
-                        TextInput::make('child')
-                            ->numeric()
-                            ->minValue(1),
                         TextInput::make('person')
                             ->numeric()
                             ->minValue(1),

@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_user')->nullable();
             // mã giao dịch
             $table->string('transaction_no')->unique();
             // mã ngân hàng
@@ -24,7 +25,8 @@ return new class extends Migration {
             $table->string('order_info')->nullable();
             // trạng thái thanh toán
             $table->boolean('status')->default(1);
-
+            $table->softDeletes();
+            $table->foreign('id_user')->references('id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }

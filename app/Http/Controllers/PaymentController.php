@@ -52,9 +52,10 @@ class PaymentController extends Controller
         $vnp_TxnRef = $orderCode; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
         $vnp_OrderInfo = 'Thanh toán đặt vé TOUR - VietTravel'; // Thông tin đơn hàng
         $vnp_Amount = $total_oder * 100; // Tổng tiền cần thanh toán
-        $vnp_Locale = 'vn';
+        $vnp_Locale = 'vn'; // việt nam
         $vnp_OrderType = 'payment';
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+        // tạo mảng chứa thông tin thanh toán VN-PAY
         $inputData = array(
             "vnp_Version" => "2.1.0",
             "vnp_TmnCode" => $vnp_TmnCode,
@@ -69,15 +70,16 @@ class PaymentController extends Controller
             "vnp_ReturnUrl" => $vnp_Returnurl,
             "vnp_TxnRef" => $vnp_TxnRef,
         );
+        // Kiểm tra mã ngân hàng tồn tại hay không ? : chọn phương thức thanh toán
         if (isset($vnp_BankCode) && $vnp_BankCode != "") {
             $inputData['vnp_BankCode'] = $vnp_BankCode;
         }
         if (isset($vnp_Bill_State) && $vnp_Bill_State != "") {
             $inputData['vnp_Bill_State'] = $vnp_Bill_State;
         }
-        // Sắp xếp
+        // Sắp xếp các giá trị INPUT
         ksort($inputData);
-
+        //
         $query = "";
         $i = 0;
         $hashdata = "";
@@ -90,26 +92,31 @@ class PaymentController extends Controller
             }
             $query .= urlencode($key) . "=" . urlencode($value) . '&';
         }
-
+        //
         $vnp_Url = $vnp_Url . "?" . $query;
+        //
         if (isset($vnp_HashSecret)) {
             $vnpSecureHash = hash('sha256', $vnp_HashSecret . $hashdata);
             $vnp_Url .= 'vnp_SecureHashType=SHA256&vnp_SecureHash=' . $vnpSecureHash;
         }
+        // lưu thông tin đặt vé của người dùng
         $booking = Booking::create([
-            'booking_number' => $orderCode,
-            'customer_name' => $name,
-            'email' => $email,
+            'booking_number' => $orderCode, // mã đặt vé
+            'customer_name' => $name, // tên khách hàng
+            'email' => $email, // địa chỉ email
             'phone_number' => $phone,
             'departure_date' => $date,
             'person' => $adults,
             'total_prices' => $total_oder,
             'id_tour' => $tour->id,
         ]);
+        // xử lý khi tạo thông tin đươn hàng thành công
         if ($booking) {
+            // thông tin người dùng có vài trò QUẢN TRỊ VIÊN
             $users = User::whereHas('roles', function ($query) {
                 $query->whereIn('name', ['Admin', 'Super Admin']);
             })->get();
+            // tạo thông báo đơn hàng mới
             Notification::make()
                 ->title('New order')
                 ->icon('heroicon-o-shopping-bag')
@@ -135,6 +142,7 @@ class PaymentController extends Controller
             $transaction->card_type = $request->vnp_CardType;
             $transaction->order_info = $request->vnp_OrderInfo;
             $transaction->status = $request->vnp_ResponseCode === '00' ? 1 : 0;
+            $transaction->id_user = auth()->user()->id; // Lưu thông tin giao dịch vào người dùng
             $transaction->save();
             // Gởi mail thông báo thanh toán thành công cho người dùng
             Mail::to(auth()->user()->email)->send(new PaymentSuccess($transaction));

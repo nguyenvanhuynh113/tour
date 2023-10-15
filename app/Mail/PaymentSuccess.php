@@ -23,7 +23,7 @@ class PaymentSuccess extends Mailable
 
     public function build()
     {
-        return $this->subject('MÃ GIAO DỊCH ' . $this->transaction->transaction_no . 'THANH TOÁN THÀNH CÔNG')
+        return $this->subject('MÃ GIAO DỊCH ' . $this->transaction->transaction_no . 'THÀNH CÔNG')
             ->markdown('emails.payment_success')
             ->with([
                 'transaction' => $this->transaction,

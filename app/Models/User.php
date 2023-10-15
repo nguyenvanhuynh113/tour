@@ -53,6 +53,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessFilament(): bool
     {
-        return $this->hasRole(['Admin', 'Super admin']);
+        return str_ends_with($this->email, '@admin.com');
     }
 }
