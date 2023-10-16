@@ -22,7 +22,7 @@ class PermissionPolicy
     public function view(User $user, Permission $permission): bool
     {
         //
-        return $user->hasPermissionTo('Xem quyền hạn');
+        return $user->hasPermissionTo('Xem quyền hạn') && $user->hasRole('Quản trị viên');
     }
 
     /**
@@ -31,7 +31,7 @@ class PermissionPolicy
     public function create(User $user): bool
     {
         //
-        return $user->hasPermissionTo('Tạo quyền hạn');
+        return $user->hasPermissionTo('Tạo quyền hạn') && $user->hasRole('Quản trị viên');
     }
 
     /**
@@ -40,7 +40,7 @@ class PermissionPolicy
     public function update(User $user, Permission $permission): bool
     {
         //
-        return $user->hasPermissionTo('Sửa quyền hạn');
+        return $user->hasPermissionTo('Sửa quyền hạn') && $user->hasRole('Quản trị viên');
     }
 
     /**
@@ -49,7 +49,7 @@ class PermissionPolicy
     public function delete(User $user, Permission $permission): bool
     {
         //
-        return $user->hasPermissionTo('Xóa quyền hạn');
+        return $user->hasPermissionTo('Xóa quyền hạn') && $user->hasRole('Quản trị viên');
     }
 
 }

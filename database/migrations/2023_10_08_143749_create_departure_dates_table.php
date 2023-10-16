@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->decimal('prices', 12, 3);
             //Ngày xuất phát
             $table->date('departure_date');
+            $table->smallInteger('quantity')->nullable();
             $table->unsignedBigInteger('id_tour')->nullable();
             $table->timestamps();
             $table->foreign('id_tour')->references('id')->on('tours')->cascadeOnDelete();

@@ -2,9 +2,10 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Blog;
+use App\Models\Booking;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,27 +13,30 @@ use Illuminate\Database\Eloquent\Builder;
 class LatestOrders extends BaseWidget
 {
     protected int|string|array $columnSpan = 'full';
-    protected static ?string $heading = 'Bài viết gần đây';
+    protected static ?string $heading = 'Đơn hàng mới';
 
     protected function getTableQuery(): Builder
     {
-        return Blog::query()->latest()->limit(10);
+        return Booking::query()->latest()->limit(10);
     }
 
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('id')
-                ->label('Mã')->sortable(),
-            Tables\Columns\TextColumn::make('title')
-                ->limit('30')
-                ->label('Tiêu đề')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('user.name')->label('Người tạo')
-                ->searchable(),
-            Tables\Columns\ImageColumn::make('image')->circular(),
+            Tables\Columns\TextColumn::make('booking_number')->label('Mã HĐ')->sortable()->searchable(),
+            Tables\Columns\TextColumn::make('customer_name')->searchable()->sortable()->label('Khách hàng'),
+            Tables\Columns\TextColumn::make('person')->sortable()->label('Số lượng vé'),
+            Tables\Columns\TextColumn::make('total_prices')
+                ->money('vnd')
+                ->label('Tổng')->sortable(),
             Tables\Columns\TextColumn::make('created_at')
-                ->dateTime('Y-m-d')
-                ->label('Ngày tạo'),
+                ->dateTime('Y-m-d')->sortable()
+                ->label('Ngày đặt'),
+            BadgeColumn::make('status')
+                ->colors([
+                    'success' => 'success',
+                    'danger' => 'fails',
+                ])
         ];
     }
 

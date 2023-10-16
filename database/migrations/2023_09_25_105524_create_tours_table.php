@@ -17,6 +17,7 @@ class CreateToursTable extends Migration
             $table->id();
             //Địa điểm diễn ra tour du lịch
             $table->unsignedBigInteger('id_place')->nullable();
+            $table->unsignedBigInteger('id_type')->nullable();
             //Tiêu đề
             $table->string('title')->unique();
             // Slug SEO
@@ -40,6 +41,7 @@ class CreateToursTable extends Migration
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('id_place')->references('id')->on('places')->cascadeOnDelete();
+            $table->foreign('id_type')->references('id')->on('types')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

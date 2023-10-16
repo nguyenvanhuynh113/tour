@@ -21,7 +21,7 @@ class UserPolicy
     public function view(User $user, User $model): bool
     {
         //
-        return $user->hasPermissionTo('Xem người dùng');
+        return $user->hasPermissionTo('Xem người dùng') && $user->hasRole('Quản trị viên');
     }
 
     /**
@@ -30,7 +30,7 @@ class UserPolicy
     public function create(User $user): bool
     {
         //
-        return $user->hasPermissionTo('Tạo người dùng');
+        return $user->hasPermissionTo('Tạo người dùng') && $user->hasRole('Quản trị viên');
 
     }
 
@@ -40,7 +40,7 @@ class UserPolicy
     public function update(User $user, User $model): bool
     {
         //
-        return $user->hasPermissionTo('Sửa người dùng');
+        return $user->hasPermissionTo('Sửa người dùng') && $user->hasRole('Quản trị viên');
     }
 
     /**
@@ -49,7 +49,7 @@ class UserPolicy
     public function delete(User $user, User $model): bool
     {
         //
-        return $user->hasPermissionTo('Xóa người dùng');
+        return $user->hasPermissionTo('Xóa người dùng') && $user->hasRole('Quản trị viên');
     }
 
 }

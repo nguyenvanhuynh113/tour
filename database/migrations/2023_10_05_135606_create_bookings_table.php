@@ -22,24 +22,16 @@ class CreateBookingsTable extends Migration
             $table->string('customer_name')->nullable();
             $table->string('email');
             $table->string('phone_number')->nullable();
+            $table->decimal('unit_prices', 12, 3);
             //Ngày đặt vé
             $table->date('booking_date')->nullable();
-            //Ngày khởi hành
-            $table->date('departure_date')->nullable();
-            //Số lượng trẻ em
-            $table->smallInteger('child')->default(0)->nullable();
-            //Số lượng người lớn
-            $table->smallInteger('person')->default(0)->nullable();
-            //Tổng tiền đươn đặt vé chuyến đi
-            $table->decimal('total_prices', 12, 3)->nullable();
-            $table->timestamps();
             //Ngày khởi hành
             $table->date('departure_date')->nullable();
             //Số lượng vé
             $table->smallInteger('person')->default(0)->nullable();
             //Tổng tiền đơn đặt vé chuyến đi
             $table->decimal('total_prices', 12, 3)->nullable();
-            $table->enum('status', ['success', 'fails'])->default('success');
+            $table->enum('status', ['thanh toán thành công', 'chưa thanh toán', 'đăng ký giữ chỗ'])->default('chưa thanh toán');
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('id_tour')->references('id')->on('tours');

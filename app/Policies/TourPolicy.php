@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Tour;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class TourPolicy
 {
@@ -23,6 +22,7 @@ class TourPolicy
     public function view(User $user, Tour $tour): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -31,6 +31,7 @@ class TourPolicy
     public function create(User $user): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -39,6 +40,7 @@ class TourPolicy
     public function update(User $user, Tour $tour): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -47,6 +49,7 @@ class TourPolicy
     public function delete(User $user, Tour $tour): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -55,6 +58,7 @@ class TourPolicy
     public function restore(User $user, Tour $tour): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -63,5 +67,6 @@ class TourPolicy
     public function forceDelete(User $user, Tour $tour): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 }

@@ -14,7 +14,7 @@ use Filament\Tables;
 class DepartureDatesRelationManager extends RelationManager
 {
     protected static string $relationship = 'departure_dates';
-    protected static ?string $label='Lịch trình chuyến đi';
+    protected static ?string $label = 'Lịch trình chuyến đi';
     protected static ?string $recordTitleAttribute = 'departure_date';
 
     public static function form(Form $form): Form
@@ -23,17 +23,13 @@ class DepartureDatesRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Card::make()
                     ->schema([
-                        Forms\Components\Select::make('id_tour')
-                            ->label('Chuyến đi')
-                            ->relationship('tour', 'title')
-                            ->searchable()
-                            ->columnSpan('full')
-                            ->preload(),
                         Forms\Components\DatePicker::make('departure_date')
                             ->label('Ngày khởi hành')
                             ->minDate(Carbon::now())
                             ->default(Carbon::now())
                             ->required(),
+                        TextInput::make('quantity')->label('Số lượng vé')->required()->numeric()
+                            ->minValue(1),
                         TextInput::make('prices')
                             ->required()
                             ->label("Giá vé theo ngày đặt")
@@ -60,7 +56,9 @@ class DepartureDatesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('prices')
                     ->sortable()
                     ->money('VND')
-                    ->label('Giá / ngày khởi hành')
+                    ->label('Giá / ngày khởi hành'),
+                Tables\Columns\TextColumn::make('quantity')
+                    ->label('Số lượng vé')->sortable()
             ])
             ->filters([
                 //

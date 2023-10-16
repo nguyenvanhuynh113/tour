@@ -42,13 +42,47 @@
                 </div> <!-- .col-md-8 -->
                 <div class="col-lg-4 sidebar ftco-animate bg-light py-md-5">
                     <div class="sidebar-box pt-md-5">
-                        <form action="#" class="search-form">
-                            <div class="form-group"><span class="icon fa fa-search"></span>
-                                <input type="text" class="form-control" placeholder="Tìm kiếm bài viết">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm bài viết" name="key">
-                            </div>
-                        </form>
+                        <div class="sidebar-box pt-md-5">
+                            <form action="#" class="search-form" id="form">
+                                <div class="form-group"><span class="icon fa fa-search"></span>
+                                    <input type="text" class="form-control" placeholder="Nhập bài viết cần tìm kiếm"
+                                           id="key">
+                                </div>
+                                <div id="result"></div>
+                            </form>
+                        </div>
                     </div>
+
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                        $(document).ready(function () {
+                            $("#key").on("input", function () {
+                                var keyword = $(this).val();
+                                if (keyword.length >= 2) {
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "/goi-y-bai-viet",
+                                        data: {
+                                            keyword: keyword
+                                        },
+                                        success: function (data) {
+                                            // Xóa kết quả trước đó
+                                            $("#result").empty();
+                                            // Duyệt qua dữ liệu JSON và hiển thị hình ảnh và tiêu đề
+                                            $.each(data, function (index, item) {
+                                                var resultItem = '<div class="resultItem row mt-2 shadow-sm">';
+                                                resultItem += '<div class="col-md-12"><a href="' + item.slug + '">' + item.title + '</a></div>';
+                                                resultItem += '</div>';
+                                                $("#result").append(resultItem);
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    $("#result").empty();
+                                }
+                            });
+                        });
+                    </script>
                     <div class="sidebar-box ftco-animate">
                         <div class="categories">
                             <h3>Danh mục bài viết</h3>

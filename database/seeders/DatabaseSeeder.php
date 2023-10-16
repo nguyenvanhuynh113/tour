@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
         ]);
         // Tạo vai trò
         $role1 = Role::create(['name' => 'Quản trị viên']);
-        $role2 = Role::create(['name' => 'Quản lí']);
+        $role2 = Role::create(['name' => 'Quản lý']);
         $role3 = Role::create(['name' => 'Bán hàng']);
         $role4 = Role::create(['name' => 'Nhân viên']);
         // phân quyền cho tài khoản

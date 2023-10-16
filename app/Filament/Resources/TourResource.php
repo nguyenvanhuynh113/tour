@@ -24,10 +24,10 @@ class TourResource extends Resource
     protected static ?string $model = Tour::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';
-    protected static ?string $navigationGroup = 'Chuyến đi';
+    protected static ?string $navigationGroup = 'Quản lý Tour';
     protected static ?string $navigationLabel = 'Chuyến đi';
 
-    protected static ?string $slug = 'du-lich';
+    protected static ?string $slug = 'chuyen-di';
 
     public static function form(Form $form): Form
     {
@@ -77,7 +77,63 @@ class TourResource extends Resource
                                     ->modalButton('Tạo địa điểm')
                                     ->modalWidth('lg');
                             }),
-
+                        Select::make('id_type')
+                            ->label('Loại hình')
+                            ->relationship('type', 'name')
+                            ->preload()->createOptionForm([
+                                Forms\Components\TextInput::make('name')
+                                    ->required()
+                                    ->label('Tên loại hình')
+                                    ->placeholder('VD: Tour du lịch,...')
+                                    ->unique()
+                                    ->maxLength(255)
+                                    ->afterStateUpdated(function (Closure $get, Closure $set, ?string $state) {
+                                        if (!$get('is_slug_changed_manually') && filled($state)) {
+                                            $set('slug', Str::slug($state));
+                                        }
+                                    })
+                                    ->reactive(),
+                                Forms\Components\TextInput::make('slug')
+                                    ->required()
+                                    ->maxLength(255),
+                            ])
+                            ->createOptionAction(function (Forms\Components\Actions\Action $action) {
+                                return $action
+                                    ->modalHeading('Tạo loại hình tour')
+                                    ->modalButton('Tạo loại hình')
+                                    ->modalWidth('lg');
+                            }),
+                        Select::make('coupons')->label('Mã giảm giá')
+                            ->multiple()
+                            ->relationship('coupons', 'coupon_code')
+                            ->searchable()
+                            ->preload()->createOptionForm([
+                                Forms\Components\TextInput::make('coupon_code')
+                                    ->default('GIAMGIA-' . rand(99999, 10000000))
+                                    ->required()
+                                    ->label('Mã Giảm Giá')
+                                    ->maxLength(255),
+                                Forms\Components\DateTimePicker::make('coupon_start_date')
+                                    ->label('Ngày bắt đầu')
+                                    ->minDate(Carbon::yesterday())
+                                    ->required(),
+                                Forms\Components\DateTimePicker::make('coupon_end_date')
+                                    ->label('Ngày kết thúc')
+                                    ->required(),
+                                Forms\Components\TextInput::make('discount_value')
+                                    ->label('Giá trị giảm')
+                                    ->prefix('%')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->maxValue(100)
+                                    ->required(),
+                            ])
+                            ->createOptionAction(function (Forms\Components\Actions\Action $action) {
+                                return $action
+                                    ->modalHeading('Tạo mã giảm giá')
+                                    ->modalButton('Tạo mã giảm giá')
+                                    ->modalWidth('lg');
+                            }),
                         TextInput::make('total_date_tour')
                             ->label('Tổng số ngày / chuyến')
                             ->numeric()->minValue(1)->required(),
@@ -109,6 +165,13 @@ class TourResource extends Resource
                             ->required(),
                         Forms\Components\FileUpload::make('image')
                             ->required()
+                            ->imagePreviewHeight('150')
+                            ->loadingIndicatorPosition('left')
+                            ->panelAspectRatio('2:1')
+                            ->panelLayout('integrated')
+                            ->removeUploadedFileButtonPosition('right')
+                            ->uploadButtonPosition('left')
+                            ->uploadProgressIndicatorPosition('left')
                             ->label('Hình ảnh')->columnSpan('full'),
                         Forms\Components\RichEditor::make('information')
                             ->label('Thông tin')->columnSpan('full'),
@@ -132,8 +195,8 @@ class TourResource extends Resource
                     ->label('Giá')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label('Ngày tạo')
-                    ->dateTime('Y-m-d'),
+                    ->label('Ngày tạo')->sortable()
+                    ->dateTime('d/m/y H:i'),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),

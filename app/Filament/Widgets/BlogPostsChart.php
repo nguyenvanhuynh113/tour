@@ -2,36 +2,35 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Blog;
-use Filament\Widgets\LineChartWidget;
+use App\Models\Tour;
+use Filament\Widgets\BarChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 
-class BlogPostsChart extends LineChartWidget
+class BlogPostsChart extends BarChartWidget
 {
-    protected static ?string $heading = 'Bài viết';
+    protected static ?string $heading = 'Chuyến đi';
 
     protected function getData(): array
     {
-        $data = Trend::model(Blog::class)
+        $data = Trend::model(Tour::class)
             ->between(
-                start: now()->startOfYear(),
-                end: now()->endOfYear(),
+                start: now()->startOfWeek(),
+                end: now()->endOfWeek(),
             )
-            ->perMonth()
+            ->perDay()
             ->count();
-
         return [
             'datasets' => [
                 [
-                    'label' => 'Số lượng bài viết',
-                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => '	#FF0000',
+                    'label' => 'Số lượng chuyến đi',
+                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
+                    'backgroundColor' => '#FF0000',
                     'borderColor' => '#FF0000',
-                    'fill'=>false
+                    'fill' => false
                 ],
             ],
-            'labels' => $data->map(fn (TrendValue $value) => $value->date),
+            'labels' => $data->map(fn(TrendValue $value) => 'Ngày ' . date('d', strtotime($value->date))),
         ];
     }
 }

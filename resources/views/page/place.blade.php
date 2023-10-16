@@ -18,61 +18,53 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="search-wrap-1 ftco-animate">
-                        <form action="#" class="search-property-1" method="post">
+                        {{-- Form tim kiem trang chu--}}
+                        <form action="{{route('tim-kiem')}}" class="search-property-1" method="post"
+                              enctype="multipart/form-data">
                             @csrf
                             <div class="row no-gutters">
-                                <div class="col-lg d-flex">
-                                    <div class="form-group p-4 border-0">
+
+                                <div class="col-md d-flex">
+                                    <div class="form-group p-4">
                                         <label for="#">Địa điểm</label>
                                         <div class="form-field">
                                             <div class="icon"><span class="fa fa-search"></span></div>
                                             <input type="text" class="form-control" name="place"
-                                                   placeholder="Tìm kiếm nơi bạn muốn đến">
+                                                   placeholder="Tìm kiếm địa điểm">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg d-flex">
+                                <div class="col-md d-flex">
                                     <div class="form-group p-4">
-                                        <label for="#">Ngày đi</label>
+                                        <label for="#">Ngày Khởi Hành</label>
                                         <div class="form-field">
                                             <div class="icon"><span class="fa fa-calendar"></span></div>
-                                            <input type="text" class="form-control checkin_date" name="check_in_date"
-                                                   placeholder="Ngày đi">
+                                            <input type="text" class="form-control checkin_date"
+                                                   name="check_in_date"
+                                                   placeholder="Ngày khởi hành">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg d-flex">
+                                <div class="col-md d-flex">
                                     <div class="form-group p-4">
-                                        <label for="#">Ngày về</label>
-                                        <div class="form-field">
-                                            <div class="icon"><span class="fa fa-calendar"></span></div>
-                                            <input type="text" class="form-control checkout_date"
-                                                   name="check_out_date"
-                                                   placeholder="Ngày về">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg d-flex">
-                                    <div class="form-group p-4">
-                                        <label for="#">Giá</label>
+                                        <label for="#">Giá tối đa</label>
                                         <div class="form-field">
                                             <div class="select-wrap">
-                                                <div class="icon"><span class="fa fa-chevron-down"></span></div>
-                                                <select name="tour_prices" id="" class="form-control">
-                                                    <option value="">$5,000</option>
-                                                    <option value="">$10,000</option>
-                                                    <option value="">$50,000</option>
-                                                    <option value="">$100,000</option>
-                                                    <option value="">$200,000</option>
-                                                    <option value="">$300,000</option>
-                                                    <option value="">$400,000</option>
-                                                    <option value="">$500,000</option>
-                                                    <option value="">$600,000</option>
-                                                    <option value="">$700,000</option>
-                                                    <option value="">$800,000</option>
-                                                    <option value="">$900,000</option>
-                                                    <option value="">$1,000,000</option>
-                                                    <option value="">$2,000,000</option>
+                                                <div class="icon"><span
+                                                        class="fa fa-chevron-down"></span></div>
+                                                <select name="tour_prices" id="tour_prices"
+                                                        class="form-control">
+                                                    <option value="">Chọn mức giá tối đa</option>
+                                                    <option value="1000000">đ 1,000,000</option>
+                                                    <option value="2000000">đ 2,000,000</option>
+                                                    <option value="3000000">đ 3,000,000</option>
+                                                    <option value="4000000">đ 4,000,000</option>
+                                                    <option value="5000000">đ 5,000,000</option>
+                                                    <option value="6000000">đ 6,000,000</option>
+                                                    <option value="7000000">đ 7,000,000</option>
+                                                    <option value="8000000">đ 8,000,000</option>
+                                                    <option value="9000000">đ 9,000,000</option>
+                                                    <option value="10000000">đ 10,000,000</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -80,9 +72,11 @@
                                 </div>
                                 <div class="col-lg d-flex">
                                     <div class="form-group d-flex w-100 border-0">
-                                        <div class="form-field w-100 align-items-center d-flex">
-                                            <input type="submit" value="Tìm kiếm"
-                                                   class="align-self-stretch form-control btn btn-primary">
+                                        <div
+                                            class="form-field w-100 align-items-center d-flex">
+                                            <input type="submit" value="Tìm kiếm "
+                                                   class="align-self-stretch form-control btn
+                                                                        btn-primary">
                                         </div>
                                     </div>
                                 </div>
@@ -106,7 +100,8 @@
                             </a>
                             <div class="text p-4">
                                 <span class="days">{{$item->total_date_tour}} ngày</span>
-                                <h3><a href="{{\Illuminate\Support\Facades\URL::to('chi-tiet-chuyen-di/'.$item->slug)}}"
+                                <h3>
+                                    <a href="{{\Illuminate\Support\Facades\URL::to('chi-tiet-chuyen-di/'.$item->slug)}}"
                                        style="font-size: 16px">{{$item->title}}</a></h3>
                                 <p class="location"><span class="fa fa-map-marker"></span> {{$item->des_address}}
                                 </p>

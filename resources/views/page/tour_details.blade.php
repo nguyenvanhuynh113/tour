@@ -31,13 +31,48 @@
                 <div class="col-lg-4 sidebar ftco-animate bg-light py-md-5">
                     <div class="row shadow-sm">
                         <div class="sidebar-box pt-md-5">
-                            <form action="#" class="search-form">
-                                <div class="form-group">
-                                    <span class="icon fa fa-search"></span>
-                                    <input type="text" class="form-control" placeholder="Tìm kiếm chuyến đi">
-                                </div>
-                            </form>
+                            <div class="sidebar-box pt-md-5">
+                                <form action="#" class="search-form">
+                                    <div class="form-group"><span class="icon fa fa-search"></span>
+                                        <input type="text" class="form-control"
+                                               placeholder="Nhập chuyến đi cần tìm kiếm"
+                                               id="key">
+                                    </div>
+                                    <div id="result"></div>
+                                </form>
+                            </div>
                         </div>
+
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <script>
+                            $(document).ready(function () {
+                                $("#key").on("input", function () {
+                                    var keyword = $(this).val();
+                                    if (keyword.length >= 3) {
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "/goi-y-chuyen-di",
+                                            data: {
+                                                keyword: keyword
+                                            },
+                                            success: function (data) {
+                                                // Xóa kết quả trước đó
+                                                $("#result").empty();
+                                                // Duyệt qua dữ liệu JSON và hiển thị hình ảnh và tiêu đề
+                                                $.each(data, function (index, item) {
+                                                    var resultItem = '<div class="resultItem row mt-2 shadow-sm">';
+                                                    resultItem += '<div class="col-md-12"><a href="' + item.slug + '">' + item.title + '</a></div>';
+                                                    resultItem += '</div>';
+                                                    $("#result").append(resultItem);
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        $("#result").empty();
+                                    }
+                                });
+                            });
+                        </script>
                         <div class="sidebar-box ftco-animate">
                             <div class="categories">
                                 <h3>Địa điểm</h3>
@@ -68,7 +103,8 @@
                         <div class="overlay"></div>
                         <h2>Chúng tôi là VietTravel </h2>
                         <p>Liên hệ ngay với chúng tôi để nhận thông tin về chuyến đi mà bạn đang quan tâm.</p>
-                        <p class="mb-0"><a href="#" class="btn btn-primary px-4 py-3">Liên hệ ngay</a></p>
+                        <p class="mb-0"><a href="{{\Illuminate\Support\Facades\URL::to('lien-he')}}"
+                                           class="btn btn-primary px-4 py-3">Liên hệ ngay</a></p>
                     </div>
                 </div>
             </div>
@@ -98,6 +134,75 @@
                             </div>
                         @else
                             @guest
+                                <style>
+                                    label {
+                                        color: #070707;
+                                    }
+                                </style>
+                                <div class="form-group mx-3">
+                                    <label for="selected_date">Chọn ngày khởi hành</label>
+                                    <div class="form-field">
+                                        <div class="btn-group" role="group">
+                                            @foreach($departure_dates as $date)
+                                                @if($date->quantity>0)
+                                                    <button type="button"
+                                                            class="btn btn-primary mx-2 my-2 rounded-pill py-2 px-2"
+                                                            onclick="selectDate('{{ $date->departure_date }}', {{ $date->quantity }},{{$date->prices}})">
+                                                        {{ (new DateTime($date->departure_date))->format('d-m-Y') }}
+                                                    </button>
+                                                @else
+                                                    <button type="button"
+                                                            class="btn btn-primary mx-2 my-2 rounded-pill py-2 px-2"
+                                                            disabled
+                                                            onclick="selectDate('{{ $date->departure_date }}', {{ $date->quantity }},{{$date->prices}})">
+                                                        {{ (new DateTime($date->departure_date))->format('d-m-Y') }}
+                                                    </button>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                        <input type="hidden" name="check_in_date" id="selected_date" value="">
+                                    </div>
+                                    <div class="form-group mx-3 my-3">
+                                        <label class="mb-2">Thông tin: </label>
+                                        <div class="row shadow-sm container">
+                                            <div class="col-md-4">
+                                                <label>Ngày : <strong id="check_date"></strong></label>
+                                            </div>
+                                            <div class="col-md-4"><label>Còn :
+                                                    <strong style="color: #e34807"
+                                                            id="remaining_tickets"></strong></label></div>
+                                            <div class="col-md-4"><label>Giá vé: <strong style="color: #e34807"
+                                                                                         id="tour_prices"></strong></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        function selectDate(date, quantity, prices) {
+                                            const formattedPrice = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(prices);
+                                            document.getElementById('check_date').style.color = '#e34807';
+                                            document.getElementById('selected_date').value = date;
+                                            document.getElementById('tour_prices').innerText = formattedPrice
+                                            document.getElementById('remaining_tickets').innerText = quantity + ' vé';
+                                            document.getElementById('check_date').innerHTML = date;
+                                            document.getElementById('adults').setAttribute('max', quantity);
+                                            document.getElementById('adults').addEventListener('input', function () {
+                                                var check = document.getElementById('quantity');
+                                                var personInput = this.value;
+                                                const value = parseInt(personInput, 10);
+                                                if (isNaN(value) || value < 1 || value > quantity) {
+                                                    check.style.color = 'red';
+                                                    check.innerText = 'Số lượng vé không hợp lệ';
+                                                } else {
+                                                    check.style.color = 'green';
+                                                    check.innerText = 'Giá trị hợp lệ';
+                                                }
+                                            })
+                                        }
+                                    </script>
+                                </div>
                                 <div class="form-group mx-3">
                                     <label for="name">Điền thông tin đặt vé</label>
                                     <input type="text" class="form-control" id="name" name="name"
@@ -113,100 +218,350 @@
                                         <div class="col-md-8">
                                             <label for="phone">Số điện thoại</label>
                                             <input type="tel" class="form-control" id="phone" name="phone" required>
+                                            <small id="phoneHelp" class="form-text">Vui lòng nhập số điện thoại theo
+                                                định dạng: +84xxxxxxxxx hoặc 0xxxxxxxxx.</small>
                                         </div>
                                         <div class="col-md-4">
-                                            <label for="adults" class="col-form-label text-center">Số lượng vé:</label>
-                                            <input type="number" class="form-control" id="adults" name="adults"
-                                                   min="1" max="{{$tour->quantity}}"
-                                                   value="1" required>
+                                            <div class="col-md-4">
+                                                <label for="adults" class="col-form-label text-center">Người lớn (>18
+                                                    tuổi):</label>
+                                                <input type="number" class="form-control" id="adults" name="adults"
+                                                       min="1" value="1" required>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label for="children" class="col-form-label text-center">Trẻ nhỏ (11-17
+                                                    tuổi):</label>
+                                                <input type="number" class="form-control" id="children" name="children"
+                                                       min="0" value="0" required>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label for="kids" class="col-form-label text-center">Trẻ em (0-10
+                                                    tuổi):</label>
+                                                <input type="number" class="form-control" id="kids" name="kids" min="0"
+                                                       value="0" required>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group mx-3">
-                                    <label for="selected_date">Chọn ngày khởi hành</label>
-                                    <div class="form-field">
-                                        <div class="btn-group" role="group">
-                                            @foreach($departure_dates as $date)
-                                                <button type="button"
-                                                        class="btn btn-primary mx-2 my-2 rounded-pill py-2 px-2"
-                                                        onclick="selectDate('{{ $date->departure_date }}')">
-                                                    {{ (new DateTime($date->departure_date))->format('d-m-Y') }}
-                                                </button>
-                                            @endforeach
-                                        </div>
-                                        <input type="hidden" name="check_in_date" id="selected_date" value="">
-                                    </div>
-                                </div>
-                                {{--Gắn giá trị ngày khởi hành khi chọn ngày--}}
-                                <script>
-                                    function selectDate(date) {
-                                        document.getElementById('selected_date').value = date;
-                                    }
-                                </script>
                             @else
                                 @php
                                     $user=\Illuminate\Support\Facades\Auth::user();
                                 @endphp
+                                <style>
+                                    label {
+                                        color: #070707;
+                                    }
+                                </style>
                                 <div class="form-group mx-3">
-                                    <label for="name">Điền thông tin đặt vé</label>
-                                    <input type="text" class="form-control" id="name" name="name"
-                                           value="{{$user->name}}"
-                                           placeholder="VD: NGUYỄN VĂN A" required disabled>
-                                </div>
-                                <div class="form-group mx-3">
-                                    <label for="email">Địa chỉ email</label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                           value="{{$user->email}}"
-                                           placeholder="VD: nguyenvana@gmail.com" required disabled>
-                                </div>
-                                <div class="form-group mx-3">
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <label for="phone">Số điện thoại</label>
-                                            <input type="tel" class="form-control" id="phone" name="phone" required>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="adults" class="col-form-label text-center">Số lượng vé:</label>
-                                            <input type="number" class="form-control" id="adults" name="adults"
-                                                   min="1" max="{{$tour->quantity}}"
-                                                   value="1" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group mx-3">
-                                    <label for="selected_date">Chọn ngày khởi hành</label>
+                                    <label for="selected_date">Chọn ngày khởi hành:</label>
                                     <div class="form-field">
                                         <div class="btn-group" role="group">
                                             @foreach($departure_dates as $date)
-                                                <button type="button"
-                                                        class="btn btn-primary mx-2 rounded-pill py-2 px-2"
-                                                        onclick="selectDate('{{ $date->departure_date }}')">
-                                                    {{ (new DateTime($date->departure_date))->format('d-m-Y') }}
-                                                </button>
+                                                @if($date->quantity>0)
+                                                    <button type="button"
+                                                            class="btn btn-primary mx-2 my-2 rounded-pill py-2 px-2"
+                                                            onclick="selectDate('{{ $date->departure_date }}', {{ $date->quantity }},{{$date->prices}})">
+                                                        {{ (new DateTime($date->departure_date))->format('d-m-Y') }}
+                                                    </button>
+                                                @else
+                                                    <button type="button"
+                                                            class="btn btn-primary mx-2 my-2 rounded-pill py-2 px-2"
+                                                            disabled
+                                                            onclick="selectDate('{{ $date->departure_date }}', {{ $date->quantity }},{{$date->prices}})">
+                                                        {{ (new DateTime($date->departure_date))->format('d-m-Y') }}
+                                                    </button>
+                                                @endif
                                             @endforeach
                                         </div>
                                         <input type="hidden" name="check_in_date" id="selected_date" value="">
                                     </div>
-                                </div>
-                                {{--Gắn giá trị ngày khởi hành khi chọn ngày--}}
-                                <script>
-                                    function selectDate(date) {
-                                        document.getElementById('selected_date').value = date;
-                                    }
-                                </script>
-                            @endguest
+                                    <div class="form-group mx-3 my-3">
+                                        <label class="mb-2">Thông tin vé:</label>
+                                        <div class="row shadow-sm container">
+                                            <div class="col-md-4">
+                                                <label>Ngày : <strong id="check_date"></strong></label>
+                                            </div>
+                                            <div class="col-md-4"><label>Còn :
+                                                    <strong style="color: #e34807"
+                                                            id="remaining_tickets"></strong></label></div>
+                                            <div class="col-md-4"><label>Giá vé: <strong style="color: #e34807"
+                                                                                         id="tour_prices"></strong></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        function selectDate(date, quantity, prices) {
+                                            const formattedPrice = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(prices);
+                                            document.getElementById('check_date').style.color = '#e34807';
+                                            document.getElementById('selected_date').value = date;
+                                            document.getElementById('tour_prices').innerText = formattedPrice
+                                            document.getElementById('remaining_tickets').innerText = quantity + ' vé';
+                                            document.getElementById('check_date').innerHTML = date;
+                                            document.getElementById('adults').setAttribute('max', quantity);
+                                            document.getElementById('children').setAttribute('max', quantity);
+                                            document.getElementById('kids').setAttribute('max', quantity);
+                                            var adultsInput = parseInt(document.getElementById('adults').value, 10) || 0;
+                                            var childrenInput = parseInt(document.getElementById('children').value, 10) || 0;
+                                            var kidsInput = parseInt(document.getElementById('kids').value, 10) || 0;
+                                            var coupon = parseInt(document.getElementById('coupon').value, 10) || 0;
+                                            var totalQuantity = adultsInput + childrenInput + kidsInput;
+                                            if (totalQuantity <= 0) {
+                                                document.getElementById('quantity').style.color = 'red';
+                                                document.getElementById('quantity').innerText = 'Số lượng vé không hợp lệ';
+                                                document.getElementById('submitForm').setAttribute('disabled', 'true');
+                                            } else if (totalQuantity > quantity) {
+                                                document.getElementById('quantity').style.color = 'red';
+                                                document.getElementById('quantity').innerText = 'Số lượng vé vượt quá số lượng còn lại';
+                                                document.getElementById('submitForm').setAttribute('disabled', 'true');
+                                            } else {
+                                                document.getElementById('quantity').style.color = 'green';
+                                                document.getElementById('quantity').innerText = 'Số lượng vé hợp lệ';
+                                                document.getElementById('submitForm').removeAttribute('disabled');
+                                            }
+                                            var kid = (kidsInput * prices) * 0.25;
+                                            var adults = adultsInput * prices;
+                                            var child = (childrenInput * prices) * 0.75;
+                                            var sub_total = kid + adults + child;
+                                            var discount = sub_total * (coupon / 100);
+                                            var total = sub_total - discount;
+                                            document.getElementById('kids_prices').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(kid);
+                                            document.getElementById('adults_prices').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(adults);
+                                            document.getElementById('childrens_prices').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(child);
+                                            document.getElementById('subtotal').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(sub_total);
+                                            document.getElementById('coupon_value').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(discount);
+                                            document.getElementById('total').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(total);
 
+                                            // Truyền giá trị quantity vào hàm checkQuantity
+                                            document.getElementById('adults').addEventListener('input', function () {
+                                                checkQuantity(quantity, prices);
+                                            });
+                                            document.getElementById('children').addEventListener('input', function () {
+                                                checkQuantity(quantity, prices);
+                                            });
+                                            document.getElementById('kids').addEventListener('input', function () {
+                                                checkQuantity(quantity, prices);
+                                            });
+                                        }
+
+                                        function checkQuantity(quantity, prices) {
+                                            var adultsInput = parseInt(document.getElementById('adults').value, 10) || 0;
+                                            var childrenInput = parseInt(document.getElementById('children').value, 10) || 0;
+                                            var kidsInput = parseInt(document.getElementById('kids').value, 10) || 0;
+                                            var coupon = parseInt(document.getElementById('coupon').value, 10) || 0;
+                                            var totalQuantity = adultsInput + childrenInput + kidsInput;
+                                            if (totalQuantity <= 0) {
+                                                document.getElementById('quantity').style.color = 'red';
+                                                document.getElementById('quantity').innerText = 'Số lượng vé không hợp lệ';
+                                                document.getElementById('submitForm').setAttribute('disabled', 'true');
+                                            } else if (totalQuantity > quantity) {
+                                                document.getElementById('quantity').style.color = 'red';
+                                                document.getElementById('quantity').innerText = 'Số lượng vé vượt quá số lượng còn lại';
+                                                document.getElementById('submitForm').setAttribute('disabled', 'true');
+                                            } else {
+                                                document.getElementById('quantity').style.color = 'green';
+                                                document.getElementById('quantity').innerText = 'Số lượng vé hợp lệ';
+                                                document.getElementById('submitForm').removeAttribute('disabled');
+                                            }
+                                            var kid = (kidsInput * prices) * 0.25;
+                                            var adults = adultsInput * prices;
+                                            var child = (childrenInput * prices) * 0.75;
+                                            var sub_total = kid + adults + child;
+                                            var discount = sub_total * (coupon / 100);
+                                            var total = sub_total - discount;
+                                            document.getElementById('kids_prices').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(kid);
+                                            document.getElementById('adults_prices').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(adults);
+                                            document.getElementById('childrens_prices').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(child);
+                                            document.getElementById('subtotal').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(sub_total);
+                                            document.getElementById('coupon_value').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(discount);
+                                            document.getElementById('total').innerText = new Intl.NumberFormat('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                            }).format(total);
+
+                                        }
+                                    </script>
+                                </div>
+                                <div class="form-group mx-3 my-3">
+                                    <label>Thông tin khách hàng: </label>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <small>Địa chỉ email</small>
+                                            <input type="email" class="form-control" id="email" name="email"
+                                                   value="{{$user->email}}"
+                                                   placeholder="VD: nguyenvana@gmail.com" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <small>Tên khách hàng</small>
+                                            <input type="text" class="form-control" id="name" name="name"
+                                                   value="{{$user->name}}"
+                                                   placeholder="VD: NGUYỄN VĂN A" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <small>Số điện thoại</small>
+                                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row my-3 mx-2 shadow-sm">
+                                    @php
+                                        $today = \Carbon\Carbon::now() ;// Lấy ngày hiện tại
+                                        $coupon = $tour->coupons;
+                                        $max_coupon = $coupon->filter(function ($item) use ($today) {
+                                            return $item->coupon_end_date >= $today;
+                                        })->sortByDesc('discount_value')->first();
+                                    @endphp
+                                    @if($max_coupon)
+                                        <div class="col-md-10">
+                                            <small> Đã áp dụng mã giảm
+                                                giá: <strong
+                                                    style="color: #069306"> {{$max_coupon->coupon_code}}</strong>
+                                                Giảm {{$max_coupon->discount_value}}
+                                                % cho mọi đơn hàng.</small>
+                                            <input type="hidden" id="coupon" name="discount_value"
+                                                   value="{{$max_coupon->discount_value}}">
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="form-group mx-3 my-3">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <small class="col-form-label text-center">Người lớn (>18
+                                                tuổi):</small>
+                                            <input type="number" class="form-control" id="adults" name="adults"
+                                                   max="{{$tour->quantity}}"
+                                                   min="1"
+                                                   value="1" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <small class="col-form-label text-center">Trẻ nhỏ (10-17 tuổi):</small>
+                                            <input type="number" class="form-control" id="children" name="children"
+                                                   max="{{$tour->quantity}}"
+                                                   min="0" value="0" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <small class="col-form-label text-center">Trẻ em (0-9 tuổi):</small>
+                                            <input type="number" class="form-control" id="kids" name="kids" min="0"
+                                                   max="{{$tour->quantity}}"
+                                                   value="0" required>
+                                        </div>
+                                    </div>
+                                    <small id="quantity"></small>
+                                </div>
+                                <div class="row justify-content-start align-content-lg-start">
+                                    <div class="col-md-8 mx-5 my-3">
+                                        <div class="row my-2"><small>Giá vé trẻ em (Giảm 25%) : <strong
+                                                    id="childrens_prices"
+                                                    class="mx-2"
+                                                    style="color: #e34807"></strong></small>
+                                        </div>
+                                        <div class="row my-2"><small>Giá vé em bé (Giảm 75%) : <strong id="kids_prices"
+                                                                                                       class="mx-2"
+                                                                                                       style="color: #e34807"></strong></small>
+                                        </div>
+                                        <div class="row my-2"><small>Giá vé người lớn : <strong id="adults_prices"
+                                                                                                class="mx-2"
+                                                                                                style="color: #e34807"></strong></small>
+                                        </div>
+                                        <div class="row my-3 shadow-sm justify-content-center align-items-center">
+                                            <div class="col-md-6"><small>Sub_Total: <strong
+                                                        id="subtotal"></strong></small></div>
+                                            <div class="col-md-6"><small>Giảm giá: - <strong
+                                                        id="coupon_value"></strong></small></div>
+                                        </div>
+                                        <div class="row my-3 mx-2"><h5>Tổng thanh toán : </h5> <strong id="total"
+                                                                                                       class="mx-2"
+                                                                                                       style="color: #e34807"></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endguest
                         @endif
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
                     @if(count($departure_dates)>0)
-                        <button type="submit" form="bookingForm" class="btn btn-primary">Xác nhận đặt vé</button>
+                        <button type="submit" form="bookingForm" id="submitForm" class="btn btn-primary" disabled>Xác
+                            nhận đặt
+                            vé
+                        </button>
                     @endif
                 </div>
             </div>
         </div>
     </div>
+    <script>
 
+        document.getElementById('phone').addEventListener('input', function () {
+            var phoneInput = this.value;
+            // Loại bỏ các ký tự không phải số từ chuỗi
+            var phoneNumber = phoneInput.replace(/\D/g, '');
+            // Kiểm tra độ dài số điện thoại và định dạng
+            var phonePattern = /^((\+84)|0)[3|5|7|8|9]\d{8}$/; // Định dạng số điện thoại +84xxxxxxxxx hoặc 0xxxxxxxxx
+            // Kiểm tra định dạng số điện thoại
+            var isPhoneNumberValid = phonePattern.test(phoneNumber);
+            // Hiển thị thông báo lỗi nếu số điện thoại không hợp lệ
+            var phoneHelp = document.getElementById('phoneHelp');
+            var check_date = document.getElementById('check_date');
+            var submitButton = document.getElementById('submitForm');
+            var date = document.getElementById('selected_date').value;
+            if (isPhoneNumberValid && date !== '') {
+                // Số điện thoại và ngày hợp lệ
+                submitButton.removeAttribute('disabled');
+                phoneHelp.style.color = 'green';
+                phoneHelp.innerHTML = 'Số điện thoại hợp lệ.';
+                check_date.style.color = '#e34807';
+                check_date.innerHTML = date;
+            } else if (!isPhoneNumberValid) {
+                // Số điện thoại không hợp lệ
+                phoneHelp.style.color = 'red';
+                phoneHelp.innerHTML = 'Vui lòng nhập số điện thoại hợp lệ.';
+                submitButton.setAttribute('disabled', 'true');
+            } else {
+                // Ngày chưa được chọn
+                check_date.style.color = 'red';
+                check_date.innerHTML = 'Chọn ngày';
+                submitButton.setAttribute('disabled', 'true');
+            }
+        });
+    </script>
 @endsection

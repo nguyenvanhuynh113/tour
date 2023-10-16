@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Transaction;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class TransactionPolicy
 {
@@ -23,6 +22,7 @@ class TransactionPolicy
     public function view(User $user, Transaction $transaction): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -31,6 +31,7 @@ class TransactionPolicy
     public function create(User $user): bool
     {
         //
+        return false;
     }
 
     /**
@@ -39,6 +40,7 @@ class TransactionPolicy
     public function update(User $user, Transaction $transaction): bool
     {
         //
+        return false;
     }
 
     /**
@@ -47,6 +49,7 @@ class TransactionPolicy
     public function delete(User $user, Transaction $transaction): bool
     {
         //
+        return false;
     }
 
     /**
@@ -55,6 +58,7 @@ class TransactionPolicy
     public function restore(User $user, Transaction $transaction): bool
     {
         //
+        return false;
     }
 
     /**
@@ -63,5 +67,6 @@ class TransactionPolicy
     public function forceDelete(User $user, Transaction $transaction): bool
     {
         //
+        return false;
     }
 }

@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\DepartureDate;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class DepartureDatePolicy
 {
@@ -23,6 +22,7 @@ class DepartureDatePolicy
     public function view(User $user, DepartureDate $departureDate): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -31,6 +31,7 @@ class DepartureDatePolicy
     public function create(User $user): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -39,6 +40,7 @@ class DepartureDatePolicy
     public function update(User $user, DepartureDate $departureDate): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -47,6 +49,7 @@ class DepartureDatePolicy
     public function delete(User $user, DepartureDate $departureDate): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -55,6 +58,7 @@ class DepartureDatePolicy
     public function restore(User $user, DepartureDate $departureDate): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -63,5 +67,6 @@ class DepartureDatePolicy
     public function forceDelete(User $user, DepartureDate $departureDate): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 }

@@ -15,18 +15,19 @@ class PaymentSuccess extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct($transaction)
+    public function __construct($booking)
     {
         //
-        $this->transaction = $transaction;
+        $this->booking = $booking;
     }
 
     public function build()
     {
-        return $this->subject('MÃ GIAO DỊCH ' . $this->transaction->transaction_no . 'THÀNH CÔNG')
+        return $this
+            ->subject('MÃ ĐƠN HÀNG ' . $this->booking->booking_number)
             ->markdown('emails.payment_success')
             ->with([
-                'transaction' => $this->transaction,
+                'booking' => $this->booking,
             ]);
     }
 
@@ -37,7 +38,7 @@ class PaymentSuccess extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Payment Success',
+            subject: 'THÔNG BÁO ĐẶT VÉ THÀNH CÔNG',
         );
     }
 

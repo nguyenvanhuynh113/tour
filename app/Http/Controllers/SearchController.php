@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tour;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SearchController extends Controller
 {
@@ -12,7 +13,8 @@ class SearchController extends Controller
     {
         $place = $request->input('place');
         $checkInDate = $request->input('check_in_date');
-        $tourPrices = $request->input('tour_prices');
+        $min_prices = $request->input('min_prices');
+        $max_prices = $request->input('max_prices');
         // Tìm các chuyến đi (tour) theo địa điểm (place)
         $tour = Tour::whereHas('place', function ($query) use ($place) {
             $query->where('name', 'like', "%$place%");
@@ -23,9 +25,15 @@ class SearchController extends Controller
                 $query->where('departure_date', '>=', $checkInDate);
             });
         }
+        if ($min_prices && $max_prices){
+            $tour->whereBetween('normal_prices', [$min_prices, $max_prices]);
+        }
         // Tìm các chuyến đi (tour) theo giá
-        if ($tourPrices) {
-            $tour->where('normal_prices', '<=', $tourPrices);
+        if ($min_prices) {
+            $tour->where('normal_prices', '>=', $min_prices);
+        }
+        if ($max_prices){
+            $tour->where('normal_prices', '<=', $max_prices);
         }
 
         $tour = $tour->paginate(12);
@@ -33,24 +41,17 @@ class SearchController extends Controller
 
     }
 
-    public function search_blog(Request $request)
+    public function Blog_Suggestions(Request $request)
     {
-        $key = $request->key;
-        if (isset($key)) {
-
-        } else {
-            return view('page/blog_details');
-        }
+        $keyword = $request->input('keyword');
+        $suggestions = DB::table('blogs')->where('title', 'LIKE', "%$keyword%")->get();
+        return response()->json($suggestions);
     }
-
-    public function search_tour(Request $request)
+    public function Tour_Suggestions(Request $request)
     {
-        $key = $request->key;
-        if (isset($key)) {
-
-        } else {
-            return view('page/tour_details');
-        }
+        $keyword = $request->input('keyword');
+        $suggestions = DB::table('tours')->where('title', 'LIKE', "%$keyword%")->get();
+        return response()->json($suggestions);
     }
 
 }

@@ -4,7 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BookingResource\Pages;
 use App\Models\Booking;
-use Carbon\Carbon;
+use App\Models\Tour;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -13,13 +14,14 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Columns\BadgeColumn;
 
 class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-globe';
-    protected static ?string $navigationGroup = 'Chuyến đi';
+    protected static ?string $navigationGroup = 'Quản lý Tour';
     protected static ?string $navigationLabel = 'Đặt chuyến';
 
     protected static ?string $slug = 'dat-ve';
@@ -37,8 +39,23 @@ class BookingResource extends Resource
                             ->default('BK-' . rand(99999, 10000000)),
                         Select::make('id_tour')
                             ->label('Chọn chuyến đi')
+                            ->options(\App\Models\Tour::query()->pluck('title', 'id'))
                             ->relationship('tour', 'title')
+                            ->afterStateUpdated(fn($state, \Closure $set) => $set('unit_prices', Tour::find($state)?->normal_prices ?? 0))
+                            ->reactive()
                             ->searchable()->preload(),
+                        Forms\Components\TextInput::make('unit_prices')
+                            ->label("Don Giá")
+                            ->mask(fn(TextInput\Mask $mask) => $mask
+                                ->patternBlocks([
+                                    'money' => fn(Mask $mask) => $mask
+                                        ->numeric()
+                                        ->thousandsSeparator(',')
+                                        ->decimalSeparator('.'),
+                                ])
+                                ->pattern('đ money'),
+                            )->reactive(),
+
                         Forms\Components\TextInput::make('customer_name')
                             ->label('Tên khách hàng')
                             ->placeholder('Nhập tên khách hàng')
@@ -56,9 +73,18 @@ class BookingResource extends Resource
                             ->required(),
                         TextInput::make('person')
                             ->numeric()
-                            ->minValue(1),
-                        TextInput::make('prices')
-                            ->label("Giá")->mask(fn(TextInput\Mask $mask) => $mask
+                            ->required()
+                            ->afterStateUpdated(function ($state, Closure $get, Closure $set) {
+                                $quantity = $get('person');
+                                $unit_prices = $get('unit_prices');
+                                $set('total_prices', intval($quantity) * intval($unit_prices));
+                            })
+                            ->reactive(),
+                        TextInput::make('total_prices')
+                            ->numeric()
+                            ->required()
+                            ->label("Giá")
+                            ->mask(fn(TextInput\Mask $mask) => $mask
                                 ->patternBlocks([
                                     'money' => fn(Mask $mask) => $mask
                                         ->numeric()
@@ -66,10 +92,7 @@ class BookingResource extends Resource
                                         ->decimalSeparator('.'),
                                 ])
                                 ->pattern('đ money'),
-                            ),
-                        Forms\Components\DatePicker::make('booking_date')
-                            ->default(Carbon::now())
-                            ->label('Ngày đặt'),
+                            )->reactive(),
                     ])->columns(2)
             ]);
     }
@@ -78,7 +101,25 @@ class BookingResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('booking_number')
+                    ->label('Mã HĐ')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('customer_name')
+                    ->searchable()->sortable()->label('Khách hàng'),
+                Tables\Columns\TextColumn::make('person')
+                    ->sortable()->label('Số lượng vé'),
+                Tables\Columns\TextColumn::make('total_prices')
+                    ->searchable()
+                    ->money('vnd')
+                    ->label('Tổng')->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime('d/m/y H:i')->sortable()
+                    ->label('Ngày đặt'),
+                BadgeColumn::make('status')->label('Trạng thái')
+                    ->sortable()
+                    ->colors([
+                        'success' => 'success',
+                        'danger' => 'fails',
+                    ])
             ])
             ->filters([
                 //

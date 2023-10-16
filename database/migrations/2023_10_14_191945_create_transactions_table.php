@@ -13,7 +13,8 @@ return new class extends Migration {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_user')->nullable();
-            // mã giao dịch
+            // mã ĐH && mã GD
+            $table->string('order_code')->nullable();
             $table->string('transaction_no')->unique();
             // mã ngân hàng
             $table->string('bank_code');

@@ -14,7 +14,7 @@ class RolePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('Quản trị viên');
+        return $user->hasRole('Quản trị viên')&& $user->hasRole('Quản trị viên');
     }
 
     /**
@@ -23,7 +23,7 @@ class RolePolicy
     public function view(User $user, Role $role): bool
     {
         //
-        return $user->hasPermissionTo('Xem vai trò');
+        return $user->hasPermissionTo('Xem vai trò')&& $user->hasRole('Quản trị viên');
     }
 
     /**
@@ -32,7 +32,7 @@ class RolePolicy
     public function create(User $user): bool
     {
         //
-        return $user->hasPermissionTo('Tạo vai trò');
+        return $user->hasPermissionTo('Tạo vai trò')&& $user->hasRole('Quản trị viên');
     }
 
     /**
@@ -41,7 +41,7 @@ class RolePolicy
     public function update(User $user, Role $role): bool
     {
         //
-        return $user->hasPermissionTo('Sửa vai trò');
+        return $user->hasPermissionTo('Sửa vai trò')&& $user->hasRole('Quản trị viên');
     }
 
     /**
@@ -50,7 +50,7 @@ class RolePolicy
     public function delete(User $user, Role $role): bool
     {
         //
-        return $user->hasPermissionTo('Xóa vai trò');
+        return $user->hasPermissionTo('Xóa vai trò')&& $user->hasRole('Quản trị viên');
     }
 
 }

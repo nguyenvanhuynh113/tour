@@ -29,13 +29,20 @@ Route::get('/chi-tiet-chuyen-di/{slug}', [\App\Http\Controllers\HomeController::
 Route::get('/dia-diem-du-lich/{slug}', [\App\Http\Controllers\HomeController::class, 'place'])
     ->name('dia-diem-du-lich');
 // các trang khác
-Route::get('/lien-he', [\App\Http\Controllers\HomeController::class, 'contact'])->name('lien-he');
+Route::get('/lien-he', [\App\Http\Controllers\HomeController::class, 'contact'])
+    ->name('lien-he');
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/lien-he', function () {
     return view('page/contact');
 });
+Route::get('thanh-cong', function () {
+    return view('page/success_page');
+});
 // tìm kiếm
 Route::post('/tim-kiem', [\App\Http\Controllers\SearchController::class, 'search'])->name('tim-kiem');
+// goi y
+Route::get('goi-y-chuyen-di', [\App\Http\Controllers\SearchController::class, 'Tour_Suggestions'])->name('goi-y-chuyen-di');
+Route::get('goi-y-bai-viet', [\App\Http\Controllers\SearchController::class, 'Blog_Suggestions'])->name('goi-y-bai-viet');
 // thanh toán online bằng VN PAY
 Route::post('/thanh-toan', [\App\Http\Controllers\PaymentController::class, 'payment'])->name('thanh-toan');
 Route::get('/thanh-toan/ket-qua-giao-dich', [\App\Http\Controllers\PaymentController::class, 'response']);

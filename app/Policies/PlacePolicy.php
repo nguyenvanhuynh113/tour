@@ -22,6 +22,7 @@ class PlacePolicy
     public function view(User $user, Place $place): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -30,6 +31,7 @@ class PlacePolicy
     public function create(User $user): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -38,6 +40,7 @@ class PlacePolicy
     public function update(User $user, Place $place): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -46,6 +49,7 @@ class PlacePolicy
     public function delete(User $user, Place $place): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -54,6 +58,7 @@ class PlacePolicy
     public function restore(User $user, Place $place): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 
     /**
@@ -62,5 +67,6 @@ class PlacePolicy
     public function forceDelete(User $user, Place $place): bool
     {
         //
+        return $user->hasRole('Quản lý');
     }
 }

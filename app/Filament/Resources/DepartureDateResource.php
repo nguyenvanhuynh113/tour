@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DepartureDateResource\Pages;
-use App\Filament\Resources\DepartureDateResource\RelationManagers;
 use App\Models\DepartureDate;
 use Carbon\Carbon;
 use Filament\Forms;
@@ -19,8 +18,8 @@ class DepartureDateResource extends Resource
     protected static ?string $model = DepartureDate::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-map';
-    protected static ?string $navigationGroup = 'Chuyến đi';
-    protected static ?string $navigationLabel = 'Lịch trình';
+    protected static ?string $navigationGroup = 'Quản lý Tour';
+    protected static ?string $navigationLabel = 'Lịch trình chuyến đi';
 
     protected static ?string $slug = 'lich-trinh';
 
@@ -41,9 +40,11 @@ class DepartureDateResource extends Resource
                             ->minDate(Carbon::now())
                             ->default(Carbon::now())
                             ->required(),
+                        TextInput::make('quantity')->label('Số lượng vé')->required()->numeric()
+                            ->minValue(1),
                         TextInput::make('prices')
                             ->required()
-                            ->label("Giá vé theo ngày đặt")->mask(fn(TextInput\Mask $mask) => $mask
+                            ->label("Giá vé theo ngày khởi hành")->mask(fn(TextInput\Mask $mask) => $mask
                                 ->patternBlocks([
                                     'money' => fn(Mask $mask) => $mask
                                         ->numeric()
@@ -61,13 +62,15 @@ class DepartureDateResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('tour.title')->label('Chuyến đi')
+                Tables\Columns\TextColumn::make('tour.title')
+                    ->label('Chuyến đi')
                     ->limit(50)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('departure_date')
+                    ->date('d/m/y H:i')
                     ->label('Ngày khởi hành'),
                 Tables\Columns\TextColumn::make('prices')->sortable()
-                    ->label('Giá / ngày khởi hành')
+                    ->label('Giá / ngày khởi hành')->money('VND')
             ])->filters([
                 //
             ])

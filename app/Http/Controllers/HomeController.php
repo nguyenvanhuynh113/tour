@@ -22,7 +22,7 @@ class HomeController extends Controller
         //Lấy tất cả thông tin địa điểm nếu có chuyến đi
         $place = Place::whereHas('tours')->get();
         // Lấy thông tin 6 chuyến đi gần nhất được tạo sắp xếp theo thời gian tạo
-        $tour = DB::table('tours')->orderBy('created_at')->take(6)->get();
+        $tour = DB::table('tours')->inRandomOrder()->orderBy('created_at')->take(6)->get();
         //Lấy thông tin 3 chuyến đi gần nhất được tạo sắp xếp theo thời gian tạo
         $blog = DB::table('blogs')->orderByDesc('created_at')->take(4)->get();
         //Đổ dữ liệu lên trang home
@@ -40,14 +40,14 @@ class HomeController extends Controller
     {
         $category = Category::whereHas('blogs')->get();
         $blog = DB::table('blogs')->where('slug', '=', $slug)->first();
-        $new_blog = Blog::all()->take(4);
+        $new_blog = Blog::all()->take(6);
         return view('page/blog_details', compact('blog', 'category', 'new_blog'));
     }
 
     // xem tour và chi tiết tour (đặt vé)
     public function tour(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
     {
-        $tour = DB::table('tours')->paginate(12);
+        $tour = DB::table('tours')->inRandomOrder()->paginate(12);
         return view('page/tour', compact('tour'));
     }
 
