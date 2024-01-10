@@ -25,7 +25,7 @@ class TourResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-camera';
     protected static ?string $navigationGroup = 'Quản lý Tour';
-    protected static ?string $navigationLabel = 'Chuyến đi';
+    protected static ?string $label = 'Chuyến đi';
 
     protected static ?string $slug = 'chuyen-di';
 
@@ -127,6 +127,17 @@ class TourResource extends Resource
                                     ->minValue(0)
                                     ->maxValue(100)
                                     ->required(),
+                                Forms\Components\TextInput::make('max_discount_prices')
+                                    ->label('Giảm tối đa')
+                                    ->mask(fn(Mask $mask) => $mask
+                                        ->patternBlocks([
+                                            'money' => fn(Mask $mask) => $mask
+                                                ->numeric()
+                                                ->thousandsSeparator(',')
+                                                ->decimalSeparator('.'),
+                                        ])
+                                        ->pattern('đ money'),
+                                    )->reactive(),
                             ])
                             ->createOptionAction(function (Forms\Components\Actions\Action $action) {
                                 return $action

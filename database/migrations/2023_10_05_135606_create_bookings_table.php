@@ -22,7 +22,6 @@ class CreateBookingsTable extends Migration
             $table->string('customer_name')->nullable();
             $table->string('email');
             $table->string('phone_number')->nullable();
-            $table->decimal('unit_prices', 12, 3);
             //Ngày đặt vé
             $table->date('booking_date')->nullable();
             //Ngày khởi hành

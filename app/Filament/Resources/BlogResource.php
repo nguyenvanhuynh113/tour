@@ -19,7 +19,7 @@ class BlogResource extends Resource
 {
     protected static ?string $model = Blog::class;
     protected static ?string $navigationGroup = 'Quản lý Blog';
-    protected static ?string $navigationLabel = 'Bài viết';
+    protected static ?string $label='Bài viết';
     protected static ?string $slug = 'bai-viet';
 
     protected static ?string $navigationIcon = 'heroicon-o-newspaper';

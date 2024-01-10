@@ -21,7 +21,7 @@ class RoleResource extends Resource
 
     protected static ?string $slug = 'vai-tro';
     protected static ?string $navigationGroup = 'Quản Lý Người Dùng';
-    protected static ?string $navigationLabel = 'Vài trò';
+    protected static ?string $label = 'Vài trò';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationIcon = 'heroicon-o-key';
 

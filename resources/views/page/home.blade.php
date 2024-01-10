@@ -56,8 +56,25 @@
                                                 </div>
                                                 <div class="col-md d-flex">
                                                     <div class="form-group p-4">
-                                                        <label for="#">Ngày Khởi Hành <span
-                                                                class="fa fa-calendar"></span></label>
+                                                        <label for="#">Loại hình <span
+                                                                class="fa fa-map-marker"></span></label>
+                                                        <div class="form-field">
+                                                            <div class="select-wrap">
+                                                                <select class="form-control" name="type">
+                                                                    <option value="">Chọn loại hình</option>
+                                                                    @php $tye_name=\Illuminate\Support\Facades\DB::table('types')->orderByDesc('name')->get(); @endphp
+                                                                    @foreach($tye_name as $item)
+                                                                        <option
+                                                                            value="{{$item->name}}">{{ ucwords($item->name) }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md d-flex">
+                                                    <div class="form-group p-4">
+                                                        <label for="#">Ngày Khởi Hành</label>
                                                         <div class="form-field">
                                                             <input type="text" class="form-control checkin_date"
                                                                    name="check_in_date"

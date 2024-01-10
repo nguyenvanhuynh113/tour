@@ -34,8 +34,9 @@ class LatestOrders extends BaseWidget
                 ->label('Ngày đặt'),
             BadgeColumn::make('status')
                 ->colors([
-                    'success' => 'success',
-                    'danger' => 'fails',
+                    'success' => 'thanh toán thành công',
+                    'danger' => 'chưa thanh toán',
+                    'warning' => 'đăng ký giữ chỗ',
                 ])
         ];
     }

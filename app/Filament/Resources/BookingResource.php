@@ -22,7 +22,7 @@ class BookingResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-globe';
     protected static ?string $navigationGroup = 'Quản lý Tour';
-    protected static ?string $navigationLabel = 'Đặt chuyến';
+    protected static ?string $label='Đặt chuyến';
 
     protected static ?string $slug = 'dat-ve';
 
@@ -114,11 +114,11 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d/m/y H:i')->sortable()
                     ->label('Ngày đặt'),
-                BadgeColumn::make('status')->label('Trạng thái')
-                    ->sortable()
+                BadgeColumn::make('status')->sortable()
                     ->colors([
-                        'success' => 'success',
-                        'danger' => 'fails',
+                        'success' => 'thanh toán thành công',
+                        'danger' => 'chưa thanh toán',
+                        'warning' => 'đăng ký giữ chỗ',
                     ])
             ])
             ->filters([

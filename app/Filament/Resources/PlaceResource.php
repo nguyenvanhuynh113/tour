@@ -19,7 +19,7 @@ class PlaceResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
     protected static ?string $navigationGroup = 'Quản lý Tour';
-    protected static ?string $navigationLabel = 'Địa điểm';
+    protected static ?string $label = 'Địa điểm';
 
     protected static ?string $slug = 'dia-diem';
 

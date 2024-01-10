@@ -35,6 +35,12 @@ Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
 Route::get('/lien-he', function () {
     return view('page/contact');
 });
+Route::post('lienhe',[\App\Http\Controllers\HomeController::class,'lienhe'])->name('lienhe');
+Route::get('/tra-cuu', function () {
+    return view('page/tracuu');
+});
+
+Route::post('/tracuu',[\App\Http\Controllers\HomeController::class,'tracuu'])->name('tracuu');
 Route::get('thanh-cong', function () {
     return view('page/success_page');
 });
@@ -46,3 +52,6 @@ Route::get('goi-y-bai-viet', [\App\Http\Controllers\SearchController::class, 'Bl
 // thanh toán online bằng VN PAY
 Route::post('/thanh-toan', [\App\Http\Controllers\PaymentController::class, 'payment'])->name('thanh-toan');
 Route::get('/thanh-toan/ket-qua-giao-dich', [\App\Http\Controllers\PaymentController::class, 'response']);
+
+Route::post('/dang-ki-giu-cho', [\App\Http\Controllers\DepositController::class, 'deposit'])->name('dang-ki-giu-cho');
+Route::get('/dang-ki-giu-cho/ket-qua-thanh-toan', [\App\Http\Controllers\DepositController::class, 'ketqua']);

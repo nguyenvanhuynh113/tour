@@ -7,6 +7,7 @@ use App\Filament\Resources\CouponResource\RelationManagers;
 use App\Models\Coupon;
 use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput\Mask;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -18,7 +19,7 @@ class CouponResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-receipt-tax';
     protected static ?string $navigationGroup = 'Quản lý Tour';
-    protected static ?string $navigationLabel = 'Mã Giảm Giá';
+    protected static ?string $label = 'Mã Giảm Giá';
 
     protected static ?string $slug = 'ma-giam-gia';
 
@@ -46,6 +47,17 @@ class CouponResource extends Resource
                         ->minValue(0)
                         ->maxValue(100)
                         ->required(),
+                    Forms\Components\TextInput::make('max_discount_prices')
+                        ->label('Giảm tối đa')
+                        ->mask(fn(Mask $mask) => $mask
+                            ->patternBlocks([
+                                'money' => fn(Mask $mask) => $mask
+                                    ->numeric()
+                                    ->thousandsSeparator(',')
+                                    ->decimalSeparator('.'),
+                            ])
+                            ->pattern('đ money'),
+                        )->reactive(),
                 ])
             ]);
     }

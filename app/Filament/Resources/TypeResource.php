@@ -19,7 +19,7 @@ class TypeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-filter';
     protected static ?string $navigationGroup = 'Quản lý Tour';
-    protected static ?string $navigationLabel = 'Loại hình Tour';
+    protected static ?string $label = 'Loại hình Tour';
 
     protected static ?string $slug = 'loai-hinh';
 

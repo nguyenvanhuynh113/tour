@@ -6,6 +6,7 @@ use App\Filament\Resources\BookingResource;
 use App\Filament\Resources\OderResource;
 use App\Mail\PaymentSuccess;
 use App\Models\Booking;
+use App\Models\Tour;
 use App\Models\Transaction;
 use App\Models\User;
 use Filament\Notifications\Notification;
@@ -29,18 +30,33 @@ class PaymentController extends Controller
         $children = $request->children;
         $kids = $request->kids;
         // Thông tin chuyến đi
-        $tour = DB::table('tours')
-            ->join('departure_dates', 'tours.id', '=', 'departure_dates.id_tour')
-            ->select('tours.id', 'departure_dates.prices')  // Lấy tất cả cột từ cả hai bảng
+        $tour = Tour::join('departure_dates', 'tours.id', '=', 'departure_dates.id_tour')
+            ->select('tours.id', 'departure_dates.prices')
             ->where('tours.slug', '=', $slug)
             ->where('departure_dates.departure_date', '=', $date)
             ->first();
+        $coupons = $tour->coupons;
+        $today = \Carbon\Carbon::now();// Lấy ngày hiện tại
+        $max_coupon = $coupons->filter(function ($item) use ($today) {
+            return $item->coupon_end_date >= $today;
+
+        })->sortByDesc('discount_value')->first();
+
         // Tính tổng số tiền cần thanh toán ( Số lượng vé x giá theo ngày khởi hành -- tính theo loại khách hàng)
         $adults_prices = ($adults * $tour->prices); // người lớn không giảm
         $children_prices = (($children * $tour->prices) * 0.75); // trẻ em giảm 25%
         $kids_prices = (($kids * $tour->prices) * 0.25); // em bé giảm 75%
+
+        if ($max_coupon)
+        {
+            $total_oder = ($kids_prices + $adults_prices + $children_prices) - (($max_coupon->discount_value / 100) * ($kids_prices + $adults_prices + $children_prices));
+        }
+        else{
+            $total_oder = ($kids_prices + $adults_prices + $children_prices);
+        }
         //
-        $total_oder =$kids_prices+$adults_prices+$children_prices;
+
+
         // Tạo CODE đơn hàng tự động
         $randomNumber = mt_rand(999, 10000);
         $orderCode = "OD-" . $randomNumber;
@@ -108,7 +124,7 @@ class PaymentController extends Controller
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
         $returnData = array('code' => '00'
-        , 'message' => 'Đặt hàng thành công! Kiểm tra email để xem hóa đơn đặt hàng'
+        , 'message' => 'Đăng ký giữ chỗ thành công! Kiểm tra email để xem hóa đơn đặt hàng'
         , 'data' => $vnp_Url);
         if (isset($_POST['redirect'])) {
             header('Location: ' . $vnp_Url);

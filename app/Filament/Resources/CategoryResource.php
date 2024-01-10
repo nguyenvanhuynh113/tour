@@ -22,7 +22,7 @@ class CategoryResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
     protected static ?string $navigationGroup = 'Quản lý Blog';
-    protected static ?string $navigationLabel = 'Danh mục bài viết';
+    protected static ?string $label = 'Danh mục bài viết';
 
     protected static ?string $slug = 'danh-muc-bai-viet';
 

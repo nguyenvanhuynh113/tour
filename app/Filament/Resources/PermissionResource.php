@@ -18,7 +18,7 @@ class PermissionResource extends Resource
     protected static ?string $model = Permission::class;
 
     protected static ?string $navigationGroup = 'Quản Lý Người Dùng';
-    protected static ?string $navigationLabel = 'Quyền hạn';
+    protected static ?string $label = 'Quyền hạn';
     protected static ?string $slug = 'quyen-han';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationIcon = 'heroicon-o-finger-print';

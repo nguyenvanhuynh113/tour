@@ -19,7 +19,7 @@ class DepartureDateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-map';
     protected static ?string $navigationGroup = 'Quản lý Tour';
-    protected static ?string $navigationLabel = 'Lịch trình chuyến đi';
+    protected static ?string $label = 'Lịch trình chuyến đi';
 
     protected static ?string $slug = 'lich-trinh';
 
@@ -40,7 +40,10 @@ class DepartureDateResource extends Resource
                             ->minDate(Carbon::now())
                             ->default(Carbon::now())
                             ->required(),
-                        TextInput::make('quantity')->label('Số lượng vé')->required()->numeric()
+                        TextInput::make('check')->hidden(),
+                        TextInput::make('quantity')->label('Số lượng vé')
+                            ->maxValue(fn(\Closure $get)=>$get('quantity'))
+                            ->required()->numeric()
                             ->minValue(1),
                         TextInput::make('prices')
                             ->required()

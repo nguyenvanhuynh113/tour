@@ -25,7 +25,7 @@ class TransactionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
     protected static ?string $navigationGroup = 'Quản lý Tour';
-    protected static ?string $navigationLabel = 'Giao dịch';
+    protected static ?string $label = 'Giao dịch';
 
     protected static ?string $slug = 'thanh-toan';
 

@@ -13,7 +13,17 @@
             </div>
         </div>
     </section>
-
+    @if(session()->has('message'))
+        <div class="alert alert-success" id="messageAlert">
+            {{ session()->get('message') }}
+        </div>
+    @endif
+    <script>
+        // Tự động ẩn thông báo sau 30 giây
+        setTimeout(function () {
+            document.getElementById('messageAlert').style.display = 'none';
+        }, 10000);
+    </script>
     <section class="ftco-section ftco-no-pb contact-section mb-4">
         <div class="container">
             <div class="row d-flex contact-info">
@@ -59,9 +69,10 @@
 
     <section class="ftco-section contact-section ftco-no-pt">
         <div class="container">
+
             <div class="row block-9">
                 <div class="col-md-6 order-md-last d-flex">
-                    <form action="#" class="bg-light p-5 contact-form" method="post">
+                    <form action="{{route('lienhe')}}" class="bg-light p-5 contact-form" method="post">
                         @csrf
                         <div class="form-group">
                             <input type="text" class="form-control" name="name" placeholder="Tên của bạn">

@@ -15,9 +15,14 @@ class SearchController extends Controller
         $checkInDate = $request->input('check_in_date');
         $min_prices = $request->input('min_prices');
         $max_prices = $request->input('max_prices');
+        $type=$request->input('type');
         // Tìm các chuyến đi (tour) theo địa điểm (place)
         $tour = Tour::whereHas('place', function ($query) use ($place) {
             $query->where('name', 'like', "%$place%");
+        });
+        // Tìm các chuyến đi (tour) theo thể loại (type)
+        $tour = Tour::whereHas('type', function ($query) use ($type, $place) {
+            $query->where('name', 'like', "%$type%");
         });
         // Tìm các chuyến đi (tour) theo ngày khởi hành (departure_dates)
         if ($checkInDate) {
@@ -35,7 +40,6 @@ class SearchController extends Controller
         if ($max_prices){
             $tour->where('normal_prices', '<=', $max_prices);
         }
-
         $tour = $tour->paginate(12);
         return view('page/tour', compact('tour'));
 
